@@ -18,7 +18,7 @@ print('am here')
 # This is where you will load the data from the pickle files. For parts 1 and 2, you will use
 # p1_data.pkl. For Part 3, you will use pt3_data.pkl.
 ################################################################################################
-with open('/home/modamine/Desktop/state_estimation/final_project/data/pt3_data.pkl', 'rb') as file:
+with open('/home/modamine/Desktop/state_estimation/final_project/data/pt1_data.pkl', 'rb') as file:
     data = pickle.load(file)
 print('am here')
 ################################################################################################
@@ -100,9 +100,9 @@ lidar.data = (C_li @ lidar.data.T).T + t_i_li
 # most important aspects of a filter is setting the estimated sensor variances correctly.
 # We set the values here.
 ################################################################################################
-var_imu_f = 0.5
+var_imu_f = 0.1
 var_imu_w = 0.25
-var_gnss  = 0.2
+var_gnss  = 0.5
 var_lidar = 5
 
 ################################################################################################
@@ -202,11 +202,11 @@ for k in range(1, imu_f.data.shape[0]):  # start at 1 b/c we have initial predic
     # 3. Check availability of GNSS and LIDAR measurements
     R_l = (var_lidar**2) * np.identity(3)
     R_G = (var_gnss**2) * np.identity(3)
-    if  imu_f.t[k] >= gnss.t[gnss_i]  and gnss_i < 48 :
+    if  imu_f.t[k] >= gnss.t[gnss_i]  and gnss_i < 54 :
         p_check,v_check,q_check,p_cov_check = measurement_update(R_G,p_cov_check,gnss.data[gnss_i],p_check[0],v_check[0],q_check)
         gnss_i += 1
         
-    if imu_f.t[k] >= lidar.t[lidar_i]  and lidar_i < 48 :
+    if imu_f.t[k] >= lidar.t[lidar_i]  and lidar_i < 54 :
         p_check,v_check,q_check,p_cov_check = measurement_update(R_l,p_cov_check,lidar.data[lidar_i],p_check[0],v_check[0],q_check)
         lidar_i += 1
         
@@ -300,7 +300,7 @@ plt.show()
 ################################################################################################
 
 # Pt. 1 submission
-p1_indices = [9000, 9400, 9800, 10200, 10600]
+#p1_indices = [9000, 9400, 9800, 10200, 10600]
 p1_str = ''
 for val in p1_indices:
     for i in range(3):
@@ -309,19 +309,12 @@ with open('pt3_submission.txt', 'w') as file:
     file.write(p1_str)
 
 # Pt. 2 submission
-# p2_indices = [9000, 9400, 9800, 10200, 10600]
-# p2_str = ''
-# for val in p2_indices:
-#     for i in range(3):
-#         p2_str += '%.3f ' % (p_est[val, i])
-# with open('pt2_submission.txt', 'w') as file:
-#     file.write(p2_str)
 
-# Pt. 3 submission
-# p3_indices = [6800, 7600, 8400, 9200, 10000]
-# p3_str = ''
-# for val in p3_indices:
-#     for i in range(3):
-#         p3_str += '%.3f ' % (p_est[val, i])
-# with open('pt3_submission.txt', 'w') as file:
-#     file.write(p3_str)
+#Pt. 3 submission
+#p3_indices = [6800, 7600, 8400, 9200, 10000]
+#p3_str = ''
+#for val in p3_indices:
+#    for i in range(3):
+#        p3_str += '%.3f ' % (p_est[val, i])
+#with open('pt3_submission.txt', 'w') as file:
+#    file.write(p3_str)
